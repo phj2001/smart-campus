@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light;
+  --app-bg: #eef1f6;
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --panel-border: rgba(15, 23, 42, 0.08);
+  --ink: #101827;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at top left, #f8fafc 0%, #e2e8f0 60%, #d7e1ec 100%);
+}
+
+.app-shell {
+  min-height: 100%;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: linear-gradient(120deg, #1e293b, #0f172a);
+}
+
+.app-sider {
+  background: #fff;
+  border-right: 1px solid var(--panel-border);
+}
+
+.app-content {
+  position: relative;
+  height: calc(100vh - 64px);
+  background: var(--app-bg);
+}
+
+.map-page {
+  position: relative;
+  height: 100%;
+}
+
+.cesium-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.map-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 260px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
+}
+
+.status-box {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.06);
+  font-size: 12px;
+}
+
+.placeholder-page {
+  padding: 24px;
+}
