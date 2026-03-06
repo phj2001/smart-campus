@@ -15,6 +15,7 @@ import {
   getColorForHeight,
   getEntityPosition
 } from '../utils/cesiumHelpers';
+import { applyRoadBeautification } from '../utils/roadBeautification';
 import { buildRoadGraph, Graph } from '../utils/roadNetwork';
 import { planRoute } from '../utils/pathfinding';
 
@@ -44,6 +45,8 @@ export default function CesiumViewer() {
 
   const buildingsDsRef = useRef<Cesium.GeoJsonDataSource | null>(null);
   const roadsDsRef = useRef<Cesium.GeoJsonDataSource | null>(null);
+  const texturedRoadsDsRef = useRef<Cesium.GeoJsonDataSource | null>(null);
+  const roadsideTreesRef = useRef<Cesium.Entity[]>([]);
   const pointsDsRef = useRef<Cesium.GeoJsonDataSource | null>(null);
 
   // 导航可视化相关
@@ -250,6 +253,22 @@ export default function CesiumViewer() {
         roadsDsRef.current = roadsDs;
         roadsDs.show = showRoads;
 
+        // 2.1 道路美化：道路贴纹理 + 道路外侧种树
+        const beautify = await applyRoadBeautification(viewer, {
+          roadGeoJsonUrl: '/data/campus_roads_polygon.geojson',
+          roadTextureUrl: '/data/road_surface.jpg',
+          treeModelUrl: '/data/campus_tree.glb',
+          roadTextureTileSizeMeters: 1.6,
+          treeSpacingMeters: 20,
+          treeSideOffsetMeters: 0.5,
+          treeScale: 12,
+          treeMaxCount: 3000
+        });
+        texturedRoadsDsRef.current = beautify.roadDs;
+        roadsideTreesRef.current = beautify.treeEntities;
+        beautify.roadDs.show = showRoads;
+        beautify.treeEntities.forEach((tree) => { tree.show = showRoads; });
+
         // 3. 加载点要素 (图标/标记)
         const pointsDs = await Cesium.GeoJsonDataSource.load('/data/校园内点要素.geojson');
         pointsDs.entities.values.forEach(entity => {
@@ -295,13 +314,23 @@ export default function CesiumViewer() {
     };
 
     loadData();
-    return () => { active = false; };
+    return () => {
+      active = false;
+      if (texturedRoadsDsRef.current) {
+        viewer.dataSources.remove(texturedRoadsDsRef.current, true);
+        texturedRoadsDsRef.current = null;
+      }
+      roadsideTreesRef.current.forEach((tree) => viewer.entities.remove(tree));
+      roadsideTreesRef.current = [];
+    };
   }, [setStatus]);
 
   // useEffect #3: 同步图层显示状态
   useEffect(() => {
     if (buildingsDsRef.current) buildingsDsRef.current.show = showBuildings;
     if (roadsDsRef.current) roadsDsRef.current.show = showRoads;
+    if (texturedRoadsDsRef.current) texturedRoadsDsRef.current.show = showRoads;
+    roadsideTreesRef.current.forEach((tree) => { tree.show = showRoads; });
     if (pointsDsRef.current) pointsDsRef.current.show = showPoints;
   }, [showBuildings, showRoads, showPoints]);
 

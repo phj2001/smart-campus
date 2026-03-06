@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import App from './App';
+import App from './app/App';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
-import './styles/global.css';
+import './shared/styles/global.css';
 
 const queryClient = new QueryClient();
 

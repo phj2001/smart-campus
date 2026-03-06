@@ -3,8 +3,8 @@ import { Layout, Menu, Button } from 'antd';
 import { AreaChartOutlined, EnvironmentOutlined, AimOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Checkbox, Divider } from 'antd';
-import { useAppStore } from './store/appStore';
-import MapPage from './routes/MapPage';
+import { useAppStore } from '../features/map/store/appStore';
+import MapPage from '../features/map/pages/MapPage';
 
 const { Header, Sider, Content } = Layout;
 
